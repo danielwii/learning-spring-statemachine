@@ -1,0 +1,62 @@
+buildscript {
+    ext {
+        springBootVersion = "1.5.2.RELEASE"
+        dependencyManagementVersion = "1.0.0.RELEASE"
+        propdepsVerision = "0.0.7"
+    }
+    repositories {
+        mavenLocal()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "http://repo.spring.io/plugins-release" }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.springframework.build.gradle:propdeps-plugin:${propdepsVerision}"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.14.0"
+    }
+}
+
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "io.spring.dependency-management"
+apply plugin: "org.springframework.boot"
+apply plugin: "propdeps"
+apply plugin: "propdeps-idea"
+apply plugin: "com.github.ben-manes.versions"
+
+jar {
+    baseName = "api"
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+    maven { url "http://clojars.org/repo" }
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-starter-parent:1.5.2.RELEASE"
+    }
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:1.16.14"
+
+    compile "org.springframework.boot:spring-boot-starter"
+    compile "org.springframework.statemachine:spring-statemachine-core:1.2.2.RELEASE"
+
+    testCompile "org.springframework.statemachine:spring-statemachine-test:1.2.2.RELEASE"
+
+    // propdeps
+    optional "org.springframework.boot:spring-boot-configuration-processor"
+}
+
+// propdeps
+compileJava.dependsOn(processResources)
